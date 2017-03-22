@@ -1,0 +1,97 @@
+server:
+  type: default
+  # all the requests need to have the below app-context path, this should be the name of your application.
+  applicationContextPath: /read
+  adminContextPath: /admin
+  minThreads: 20
+  maxThreads: 1024
+  requestLog:
+    appenders:
+        - type: file
+          threshold: INFO
+          timeZone: IST
+          currentLogFilename: /var/log/kaamkaj/read/request.log
+          archivedLogFilenamePattern: /var/log/kaamkaj/read/request-%d{yyyy-MM-dd}.gz
+          archivedFileCount: 10
+        # enabling both console and file log to dev environment.
+        - type: console
+          timeZone: IST
+  applicationConnectors:
+    - type: http
+      port: 9070
+      acceptorThreads: 5
+  adminConnectors:
+    - type: http
+      port: 9071
+  gzip:
+    bufferSize: 8KiB
+
+logging:
+  level: INFO
+  loggers:
+    com.kaamkaj: INFO
+  appenders:
+    - type: file
+      threshold: TRACE
+      timeZone: IST
+      logFormat: "%highlight(%-5level) [%date] [%thread] [%cyan(%logger{0})] %message%n"
+      currentLogFilename: /var/log/kaamkaj/read/service.log
+      archivedLogFilenamePattern: /var/log/kaamkaj/read/service-%d{yyyy-MM-dd}.gz
+      archivedFileCount: 5
+    # enabling both console and file log to dev environment.
+    - type: console
+      timeZone: IST
+
+#database settings
+database:
+  # the name of your JDBC driver
+  driverClass: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/restbest
+
+  # the username
+  user: root
+
+  # the password
+  password:
+
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "/* MySQL Health Check */ SELECT 1"
+
+  # the minimum number of connections to keep open
+  minSize: 8
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+  # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
+  evictionInterval: 10s
+
+  # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
+  minIdleTime: 1 minute
+
+  # Whether or not connections will be validated before being borrowed from the pool. If the connection fails to validate, it will be dropped from the pool, and another will be borrowed.
+  checkConnectionOnBorrow: true
+
+# AWS DynamoDB settings
+dynamoDB:
+  # Access key
+  aws_access_key_id:
+  #Secret Key
+  aws_secret_access_key:
+  aws_dynamodb_region: ap-south-1
+
+# AWS S3 settings
+S3:
+  aws_access_key_id:
+  aws_secret_access_key :
+  aws_s3_region: ap-south-1
